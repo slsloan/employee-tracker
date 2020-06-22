@@ -54,7 +54,7 @@ function runEmployeeTracker() {
                 "Update an Employee's Manager",
                 "View Employees By Manager",
                 "Remove Department",
-                "Remove Job Role",
+                // "Remove Job Role",
                 "Remove Employee",
 
                 "Exit"
@@ -102,10 +102,10 @@ function runEmployeeTracker() {
 
                     deleteDepartment();
                     break;
-                case "Remove Job Role":
+                // case "Remove Job Role":
 
-                    deleteRole();
-                    break;
+                //     deleteRole();
+                //     break;
                 case "Remove Employee":
 
                     deleteEmployee();
@@ -247,7 +247,7 @@ function updateRole() {
     }
     ])
         .then(function (answer) {
-            connection.query("UPDATE employee SET role_id=? WHERE first_name=?", [answer.updateRole, answer.employeeUpdate], function (err, res) {
+            connection.query("UPDATE employee SET role_id=? WHERE first_name=?", [answer.roleUpdate, answer.employeeUpdate], function (err, res) {
                 if (err) throw err;
                 console.table(res);
                 console.log(`Successfully updated ${answer.employeeUpdate}'s role!`);
@@ -281,44 +281,44 @@ function updateManager() {
 // DELETE DATA
 function deleteDepartment() {
     inquirer.prompt({
-        name: "deleteDepartment",
+        name: "deptName",
         type: "input",
         message: "Enter Department Name you wish to remove:"
     })
         .then(function (answer) {
-            connection.query("DELETE FROM department WHERE name=?", [answer.deleteDepartment], function (err, res) {
+            connection.query("DELETE FROM department WHERE name=?", [answer.deptName], function (err, res) {
                 if (err) throw err;
-                console.log(`Successfully removed department named ${deleteDepartment}!`);
+                console.log(`Successfully removed department named ${answer.deptName}!`);
                 runEmployeeTracker();
             });
         });
 }
 
-function deleteRole() {
-    inquirer.prompt({
-        name: "deleteRole",
-        type: "input",
-        message: "Enter Role you wish to remove:"
-    })
-        .then(function (answer) {
-            connection.query("DELETE FROM role WHERE title=?", [answer.deleteRole], function (err, res) {
-                if (err) throw err;
-                console.log(`Successfully removed role named ${deleteRole}!`);
-                runEmployeeTracker();
-            });
-        });
-}
+// function deleteRole() {
+//     inquirer.prompt({
+//         name: "roleName",
+//         type: "input",
+//         message: "Enter Role you wish to remove:"
+//     })
+//         .then(function (answer) {
+//             connection.query("DELETE FROM role WHERE title=?", [answer.roleName], function (err, res) {
+//                 if (err) throw err;
+//                 console.log(`Successfully removed role named ${answer.roleName}!`);
+//                 runEmployeeTracker();
+//             });
+//         });
+// }
 
 function deleteEmployee() {
     inquirer.prompt({
-        name: "deleteEmployee",
+        name: "employeeID",
         type: "input",
         message: "Enter the ID of the employee you wish to remove:"
     })
         .then(function (answer) {
-            connection.query("DELETE FROM employee WHERE id=?", [answer.deleteEmployee], function (err, res) {
+            connection.query("DELETE FROM employee WHERE id=?", [answer.employeeID], function (err, res) {
                 if (err) throw err;
-                console.log(`Successfully removed employee named ${deleteEmployee}!`);
+                console.log(`Successfully removed employee with the ID of ${answer.employeeID}!`);
                 runEmployeeTracker();
             });
         });
