@@ -3,6 +3,23 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 var consoleTable = require("console.table");
 
+const banner =
+    "|---------------------------------------------------|\n" +
+    "|                                                   |\n" +
+    "|  _____                  _                         |\n" +
+    "| |  ___|_ ___  __  _ ___| | ___  _   _  ___   ___  |\n" +
+    "| |  _| | `_  '_  |  _   | |/ _ '| | | |/ _ ' / _ ' |\n" +
+    "| | |___| | | | | | |_|  | | |_| | | | |  __/|  __/ |\n" +
+    "| |_____|_| |_| |_| ____/|_|'___/|___| |____||____| |\n" +
+    "|                 |_|             |___/             |\n" +
+    "|  __  __                                           |\n" +
+    "| |  '/  | ____ _ __   ____  ___   ___   _ __       |\n" +
+    "| | |'/| |/ _' | '_ ' / _  |/ _ ' / _ ' | ,__|      |\n" +
+    "| | |  | | |_| | | | | |_| | |_| |  __/ | |         |\n" +
+    "| |_|  |_||__,_|_| |_|___,_|___, |____|_|_|         |\n" +
+    "|                           |___/                   |\n" +
+    "|---------------------------------------------------|\n";
+
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -15,7 +32,7 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     console.log("connection successful");
-
+    console.log(banner);
     runEmployeeTracker();
 });
 
@@ -39,7 +56,6 @@ function runEmployeeTracker() {
                 "Remove Department",
                 "Remove Job Role",
                 "Remove Employee",
-                "View utilized budget of a department",
 
                 "Exit"
             ]
@@ -93,10 +109,6 @@ function runEmployeeTracker() {
                 case "Remove Employee":
 
                     deleteEmployee();
-                    break;
-                case "View utilized budget of a department":
-
-                    viewByDeptBudget();
                     break;
                 case "Exit":
 
@@ -185,7 +197,7 @@ function addEmployee() {
 function viewDepartments() {
     connection.query("SELECT * FROM department", function (err, res) {
         if (err) throw err;
-        consoleTable(res);
+        console.table(res);
         runEmployeeTracker();
     });
 }
@@ -193,7 +205,7 @@ function viewDepartments() {
 function viewRoles() {
     connection.query("SELECT * FROM role", function (err, res) {
         if (err) throw err;
-        consoleTable(res);
+        console.table(res);
         runEmployeeTracker();
     });
 }
@@ -201,17 +213,24 @@ function viewRoles() {
 function viewEmployees() {
     connection.query("SELECT * FROM employee", function (err, res) {
         if (err) throw err;
-        consoleTable(res);
+        console.table(res);
         runEmployeeTracker();
     });
 }
 
 function viewByManager() {
-
-}
-
-function viewByDeptBudget() {
-
+    inquirer.prompt({
+        name: "managerID",
+        type: "input",
+        message: "Enter the manager ID of the employees you would like to view:"
+    })
+        .then(function (answer) {
+            connection.query("SELECT * FROM employee WHERE manager_id=?", [answer.managerID], function (err, res) {
+                if (err) throw err;
+                console.table(res);
+                runEmployeeTracker();
+            });
+        });
 }
 
 // UPDATE DATA
@@ -230,7 +249,7 @@ function updateRole() {
         .then(function (answer) {
             connection.query("UPDATE employee SET role_id=? WHERE first_name=?", [answer.updateRole, answer.employeeUpdate], function (err, res) {
                 if (err) throw err;
-                consoleTable(res);
+                console.table(res);
                 console.log(`Successfully updated ${answer.employeeUpdate}'s role!`);
                 runEmployeeTracker();
             });
@@ -252,7 +271,7 @@ function updateManager() {
         .then(function (answer) {
             connection.query("UPDATE employee SET manager_id=? WHERE first_name=?", [answer.managerUpdate, answer.employeeUpdate], function (err, res) {
                 if (err) throw err;
-                consoleTable(res);
+                console.table(res);
                 console.log(`Successfully updated ${answer.employeeUpdate}'s manager!`);
                 runEmployeeTracker();
             });
