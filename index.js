@@ -56,6 +56,7 @@ function runEmployeeTracker() {
                 "Remove Department",
                 // "Remove Job Role",
                 "Remove Employee",
+                // "View total utilized budget of a department"
 
                 "Exit"
             ]
@@ -110,6 +111,10 @@ function runEmployeeTracker() {
 
                     deleteEmployee();
                     break;
+                // case "View total utilized budget of a department":
+
+                //     viewDepartmentBudget();
+                //     break;
                 case "Exit":
 
                     connection.end();
@@ -233,6 +238,11 @@ function viewByManager() {
         });
 }
 
+// COULDN'T GET TO THIS FUNCTION YET
+// function viewDepartmentBudget() {
+
+// }
+
 // UPDATE DATA
 function updateRole() {
     inquirer.prompt([{
@@ -294,6 +304,7 @@ function deleteDepartment() {
         });
 }
 
+// ISSUES GETTING THIS TO WORK WITH THE FORIEGN KEYS!
 // function deleteRole() {
 //     inquirer.prompt({
 //         name: "roleName",
